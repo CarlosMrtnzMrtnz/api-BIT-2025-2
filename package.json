@@ -1,0 +1,19 @@
+{
+  "name": "bit",
+  "version": "1.0.0",
+  "description": "api de usuarios",
+  "keywords": [
+    "nodejs",
+    "express"
+  ],
+  "license": "ISC",
+  "author": "CarlosMrtnzMrtnz",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
