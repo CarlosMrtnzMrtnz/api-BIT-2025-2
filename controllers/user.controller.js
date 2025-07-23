@@ -1,3 +1,5 @@
+const userModel = require("../models/user.model")
+
 const usuarios = [
   {
     "id": 1,
@@ -36,8 +38,12 @@ const usuarios = [
   }
 ]
 
-exports.getUsuarios = (req, res)=> {
-    res.json(usuarios)
+exports.getUsuarios = async (req, res)=> {
+    try {
+        userModel.find()
+    } catch (error) {
+        res.json(error)
+    }
 }
 
 exports.getOneUser = (req, res)=> {
