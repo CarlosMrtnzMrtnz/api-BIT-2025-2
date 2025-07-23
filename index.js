@@ -1,5 +1,6 @@
 const express = require('express')
 const router = require('./routes/router')
+const connetDB = require('./config/db')
 
 const app = express()
 app.use(express.json())
@@ -14,7 +15,7 @@ app.use('/api/health',(req, res)=>{
         date: new Date().toLocaleString()
     })
 })
-
+connetDB()
 app.listen(3000,()=> {
     console.log("Server running on port 3000");
 })
