@@ -1,3 +1,4 @@
+const mongoose = require("mongoose")
 const userModel = require("../models/user.model")
 
 const usuarios = [
@@ -40,54 +41,74 @@ const usuarios = [
 
 exports.getUsuarios = async (req, res)=> {
     try {
-        userModel.find()
+        let data = await userModel.find()
+        res.json(data)
     } catch (error) {
         res.json(error)
     }
 }
 
-exports.getOneUser = (req, res)=> {
-    let id = req.params.id
-    for (let i = 0; i < usuarios.length; i++) {
-        const element = usuarios[i];
-        if (id == element.id) {
-            res.json(element)
+exports.getOneUser = async (req, res)=> {
+    try {
+        let id = req.params.id
+        
+        let usuario = await userModel.findOne({_id:id}) // findOne({_id:id})
+        
+        if (usuario) {
+            res.json(usuario)
+        } else {
+            res.json({msj:"usuario no encontrado!"})
         }
+    } catch (error) {
+        res.json(error)
+    }
+
+}
+
+exports.delteUser = async (req, res)=> {
+    try {
+        let id = req.params.id
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: 'ID no válido' });
+        }
+        
+        let user = await userModel.findByIdAndDelete(id)
+        if (user) {
+            res.json(user)
+        } else {
+            res.json({msj:"Usuario no encontrado!"})
+        }
+    } catch (error) {
+        res.json(error)
     }
 }
 
-exports.delteUser = (req, res)=> {
-    let id = req.params.id
-    let eliminado = false
-    for (let i = 0; i < usuarios.length; i++) {
-        const element = usuarios[i];
-        if (element.id == id) {
-            let deletado = usuarios.splice(i,1)
-            eliminado = true
-            res.json(deletado)
-        } 
-    }
-    if (eliminado == false) {
-            res.json({msj:"User no encontrado"})
+exports.createUser = async (req, res)=> {
+    try {
+        let datos = req.body
+        datos.id= 1
+        let newUser = new userModel(datos)
+        let guardado = await newUser.save()
+        res.json(guardado)
+    } catch (error) {
+        res.json(error)
     }
 }
 
-exports.createUser = (req, res)=> {
-    let datos = req.body
-    //console.log(req.body);
-    
-    let newUSer = usuarios.push(datos)
-    res.json(newUSer)
-}
-
-exports.updateUser = (req, res)=> {
-    let id = req.params.id
-    let data = req.body
-    for (let i = 0; i < usuarios.length; i++) {
-        let element = usuarios[i];
-        if (element.id == id) {
-            let modificado = Object.assign(element,data)
+exports.updateUser = async (req, res)=> {
+    try {
+        let id = req.params.id
+        let data = req.body
+        let updateUser = await userModel.findByIdAndUpdate(id,data)
+        if (updateUser) {
+            let modificado = Object.assign(updateUser,data)
             res.json(modificado)
+        } else {
+            res.json({msj:"No se encontro el usuario"})
         }
+
+    } catch (error) {
+        res.json(error)
     }
 }
